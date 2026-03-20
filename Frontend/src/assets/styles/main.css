@@ -1,110 +1,87 @@
 @import "tailwindcss";
 
-/* 1. Mapeamento de Variáveis para o Tailwind v4 */
 @theme {
   --color-background: var(--bg-color);
   --color-foreground: var(--text-color);
   --color-emerald-premium: #10B981;
-  
-  /* Geometria Figma */
-  --radius-premium: 40px;
-  --radius-card: 24px;
-
-  /* Tipografia Extrema */
   --font-main: 'Inter', system-ui, sans-serif;
 }
 
-/* 2. Definição Dinâmica de Cores (Light vs Dark) */
 :root {
-  /* LIGHT MODE (App Shell Interno) */
-  --bg-color: #f9fafb; /* bg-gray-50 */
-  --text-color: #111827; /* text-gray-900 */
-  
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.05);
-  
-  --input-bg: #f3f4f6; /* gray-100 */
-  --input-border: transparent;
-  --input-focus: #ffffff;
-  --input-ring: rgba(0, 0, 0, 0.05);
-  
-  --label-color: #6b7280; /* gray-500 */
+  /* LIGHT MODE (App Shell) */
+  --bg-color: #f9fafb;
+  --text-color: #111827;
+  --glass-bg: #ffffff;
+  --glass-border: #e5e7eb;
+  --input-bg: #f3f4f6;
+  --label-color: #6b7280;
 }
 
 .dark {
-  /* DARK MODE / NOIR (Login, Cadastro, Dashboards Executivos) */
+  /* DARK MODE (Auth/Noir) */
   --bg-color: #000000;
   --text-color: #ffffff;
-  
-  --glass-bg: rgba(24, 24, 27, 0.4); /* zinc-900/40 */
+  --glass-bg: rgba(24, 24, 27, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
-  
   --input-bg: rgba(0, 0, 0, 0.6);
-  --input-border: rgba(255, 255, 255, 0.05);
-  --input-focus: #1f1f1f;
-  --input-ring: rgba(255, 255, 255, 0.03);
-  
-  --label-color: #52525b; /* zinc-600 */
+  --label-color: #a1a1aa;
 }
 
-/* 3. Resets e Tipografia Base */
 @layer base {
-  * {
-    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
-  }
-
   body {
-    @apply bg-[var(--bg-color)] text-[var(--text-color)] antialiased transition-colors duration-500;
-    font-family: var(--font-main);
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    font-family: var(--font-main) !important;
+    @apply antialiased transition-colors duration-300;
   }
 
-  h1, h2, h3, .label-premium {
-    @apply font-[900] uppercase tracking-[0.2em] italic;
+  /* Força a remoção do background padrão do Vuetify */
+  .v-application {
+    background: transparent !important;
+    color: inherit !important;
   }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background-color: var(--bg-color); }
-  ::-webkit-scrollbar-thumb { @apply bg-zinc-400 dark:bg-zinc-800 rounded-full; }
+  .v-application__wrap {
+    min-height: 100vh !important;
+  }
 }
 
-/* 4. Overrides Globais e Componentes Premium */
 @layer components {
-  /* Glassmorphism Dinâmico */
+  /* Box Container Padrão (Figma) */
   .glass-container {
-    background-color: var(--glass-bg);
-    backdrop-filter: blur(24px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-premium);
-    @apply shadow-2xl;
+    background-color: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 24px !important;
+    @apply shadow-sm;
   }
 
-  /* Inputs do Vuetify: Elevação Cromática Figma */
+  /* Reset Agressivo nos Inputs do Vuetify */
   .v-field {
     background-color: var(--input-bg) !important;
-    border: 1px solid var(--input-border) !important;
-    @apply !transition-all !duration-500 !h-[52px] !rounded-[200px];
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    border-radius: 200px !important;
   }
   
-  .v-field--focused, .v-field:hover {
-    background-color: var(--input-focus) !important;
-    box-shadow: 0 0 0 2px var(--input-ring) !important;
+  .v-field__outline {
+    display: none !important;
+  }
+
+  .v-field--focused {
+    background-color: var(--glass-bg) !important;
+    border-color: var(--text-color) !important;
   }
 
   .v-label {
     color: var(--label-color) !important;
-    @apply !font-[900] !uppercase !tracking-[0.2em] !text-[9px] !opacity-100;
+    opacity: 1 !important;
+    font-weight: 600 !important;
   }
 
-  .premium-input-noir :deep(.v-field__outline),
-  .premium-input-field :deep(.v-field__outline) {
-    display: none !important;
-  }
-
-  /* Botão de Ação Adaptativo (Preto no Light, Branco no Dark) */
+  /* Botão Mestre */
   .btn-premium {
-    @apply bg-[var(--text-color)] text-[var(--bg-color)] font-[900] uppercase tracking-[0.2em] px-10 py-5 
-           rounded-[40px] transition-all duration-300
-           hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3;
-    font-size: 10px;
+    background-color: var(--text-color) !important;
+    color: var(--bg-color) !important;
+    border-radius: 200px !important;
+    @apply font-[900] uppercase tracking-[0.1em] px-8 py-4 transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2;
   }
 }

@@ -14,15 +14,13 @@ const layout = computed(() => {
 
 <template>
   <v-app class="!bg-transparent">
-    <transition name="premium-fade" mode="out-in" appear>
-      <component :is="layout">
-        <router-view v-slot="{ Component }">
-          <transition name="premium-fade" mode="out-in">
-            <component :is="Component" :key="route.path" />
-          </transition>
-        </router-view>
-      </component>
-    </transition>
+    <component :is="layout">
+      <router-view v-slot="{ Component }">
+        <transition name="premium-fade" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
+    </component>
   </v-app>
 </template>
 
@@ -43,13 +41,5 @@ body {
 .premium-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
-}
-
-.v-application {
-  background: transparent !important;
-}
-.v-application__wrap {
-  min-height: 100vh !important;
-  font-family: 'Inter', system-ui, sans-serif !important;
 }
 </style>
