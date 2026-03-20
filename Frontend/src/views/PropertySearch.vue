@@ -1,92 +1,50 @@
-<script setup>
-import { ref, computed } from 'vue'
-import PropertyCard from '@/components/search/PropertyCard.vue'
-import PartnerCarousel from '@/components/common/PartnerCarousel.vue'
+<script setup lang="ts">
+import { ref } from 'vue';
+import SearchBar from '@/components/search/SearchBar.vue';
+import PropertyCard from '@/components/search/PropertyCard.vue';
 
-const searchQuery = ref('')
-const selectedType = ref('todos')
-const showFilters = ref(false)
-
-// Mock de dados extraído do arquivo original
+// Mock Data Tipado
 const properties = ref([
-    {
-        id: 1,
-        title: 'Edifício Legacy - Meia Praia',
-        address: 'Rua 234, Meia Praia, Itapema - SC',
-        price: 'R$ 1.200.000',
-        type: 'Apartamento',
-        beds: 3,
-        baths: 2,
-        area: '120m²',
-        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800'
-    },
-    {
-        id: 2,
-        title: 'Casa Contemporânea - Efapi',
-        address: 'Rua das Palmeiras, Chapecó - SC',
-        price: 'R$ 850.000',
-        type: 'Casa',
-        beds: 4,
-        baths: 3,
-        area: '250m²',
-        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800'
-    }
-])
+    { id: 1, title: 'Edifício Horizon', type: 'Apartamento', location: 'Centro, Chapecó', price: 'R$ 1.250.000', beds: 3, baths: 2, parking: 2, image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80' },
+    { id: 2, title: 'Residencial Viverti', type: 'Casa', location: 'Efapi, Chapecó', price: 'R$ 850.000', beds: 2, baths: 1, parking: 1, image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' },
+    { id: 3, title: 'Sky Tower', type: 'Apartamento', location: 'Passo dos Fortes, Chapecó', price: 'R$ 2.100.000', beds: 4, baths: 3, parking: 3, image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80' }
+]);
 
-const filteredProperties = computed(() => {
-    return properties.value.filter(p => {
-        const matchesSearch = p.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-        const matchesType = selectedType.value === 'todos' || p.type === selectedType.value
-        return matchesSearch && matchesType
-    })
-})
+const handleSearchUpdate = (filters: any) => {
+    console.log('Filtros aplicados:', filters);
+    // Lógica futura de API
+};
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#0A0B0E] text-white">
-        <section class="relative pt-32 pb-20 px-6 bg-gradient-to-b from-black to-[#0A0B0E]">
-            <div class="max-w-7xl mx-auto text-center space-y-8">
-                <h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none">
-                    Encontre seu próximo <span class="text-emerald-400">Investimento</span>
-                </h1>
+    <div class="space-y-10 animate-fade-in">
+        
+        <div class="space-y-2">
+            <h1 class="text-4xl font-[900] uppercase tracking-tighter italic text-[var(--text-color)]">
+                Explorar <span class="text-emerald-500">Mercado</span>
+            </h1>
+            <p class="text-[10px] font-[900] uppercase tracking-[0.3em] text-[var(--label-color)]">
+                Motor de busca B2B
+            </p>
+        </div>
 
-                <div
-                    class="max-w-3xl mx-auto bg-[#14161C] border border-white/10 p-2 rounded-[40px] shadow-2xl flex flex-col md:flex-row gap-2">
-                    <v-text-field v-model="searchQuery" placeholder="Cidade, bairro ou nome do empreendimento..."
-                        variant="solo" flat hide-details class="flex-grow !rounded-full text-white"
-                        prepend-inner-icon="mdi-magnify"></v-text-field>
+        <div class="bg-[var(--bg-color)] rounded-[48px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-[var(--glass-border)] p-6 lg:p-8 transition-colors duration-500">
+            <SearchBar @search="handleSearchUpdate" />
+        </div>
 
-                    <v-btn color="emerald" height="56" class="!rounded-full px-8 !font-black"
-                        @click="showFilters = !showFilters">
-                        FILTRAR
-                    </v-btn>
-                </div>
-            </div>
-        </section>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <PropertyCard 
+                v-for="prop in properties" 
+                :key="prop.id" 
+                v-bind="prop" 
+                @click="$router.push({ name: 'PropertyDetail', params: { id: prop.id } })"
+            />
+        </div>
 
-        <PartnerCarousel class="py-12 border-y border-white/5" />
-
-        <main class="max-w-7xl mx-auto px-6 py-16">
-            <div class="flex justify-between items-end mb-10">
-                <div>
-                    <p class="text-emerald-400 text-xs font-black uppercase tracking-widest mb-2">Resultados</p>
-                    <h2 class="text-3xl font-black uppercase italic">Imóveis Disponíveis</h2>
-                </div>
-                <p class="text-gray-500 font-medium">{{ filteredProperties.length }} imóveis encontrados</p>
-            </div>
-
-            <v-row>
-                <v-col v-for="property in filteredProperties" :key="property.id" cols="12" sm="6" lg="4">
-                    <PropertyCard :property="property" />
-                </v-col>
-            </v-row>
-        </main>
     </div>
 </template>
 
 <style scoped>
-:deep(.v-field) {
-    border-radius: 40px !important;
-    background-color: transparent !important;
-}
+.animate-fade-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
