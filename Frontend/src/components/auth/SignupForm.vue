@@ -1,123 +1,84 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, computed } from 'vue';
+import { User, Lock, Briefcase, Building2, Phone, ShieldCheck, Mail } from 'lucide-vue-next';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
+import Label from '@/components/ui/Label.vue';
 
-const emit = defineEmits(['signup']);
+const emit = defineEmits(['signup', 'navigate-login']);
 
-const userType = ref<'broker' | 'construction'>('broker');
-const formData = reactive({
-    fullName: '',
-    creciOrCnpj: '',
-    phone: '',
-    email: '',
-    password: ''
+const formData = ref({
+  userType: 'broker' as 'broker' | 'construction',
+  fullName: '',
+  document: '', // CRECI ou CNPJ
+  phone: '',
+  email: '',
+  password: ''
 });
 
-const onPhoneInput = (val: string) => {
-    const numbers = val.replace(/\D/g, '');
-    if (numbers.length <= 2) formData.phone = numbers;
-    else if (numbers.length <= 7) formData.phone = `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    else formData.phone = `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
-};
+const isFormValid = computed(() => {
+  return formData.value.fullName.length > 3 && 
+         formData.value.email.includes('@') && 
+         formData.value.password.length >= 6;
+});
 
-const submitForm = () => {
-    emit('signup', { ...formData, userType: userType.value });
+const handleSubmit = () => {
+  if (isFormValid.value) emit('signup', formData.value);
 };
 </script>
 
 <template>
-    <div class="glass-container !p-12 space-y-10">
-        <div class="flex p-1.5 bg-black/40 rounded-full border border-white/5 max-w-[380px] mx-auto">
-            <button type="button" @click="userType = 'broker'" :class="[
-                'flex-1 flex items-center justify-center gap-3 py-4 rounded-full transition-all duration-500 font-black text-[10px] uppercase tracking-widest',
-                userType === 'broker' ? 'bg-white text-black shadow-xl' : 'text-zinc-500 hover:text-zinc-300'
-            ]">
-                <v-icon icon="mdi-briefcase-variant" :color="userType === 'broker' ? '#10B981' : ''" size="18" />
-                Corretor
-            </button>
-            <button type="button" @click="userType = 'construction'" :class="[
-                'flex-1 flex items-center justify-center gap-3 py-4 rounded-full transition-all duration-500 font-black text-[10px] uppercase tracking-widest',
-                userType === 'construction' ? 'bg-white text-black shadow-xl' : 'text-zinc-500 hover:text-zinc-300'
-            ]">
-                <v-icon icon="mdi-office-building" :color="userType === 'construction' ? '#10B981' : ''" size="18" />
-                Construtora
-            </button>
-        </div>
-
-        <div class="space-y-8">
-            <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-full bg-black border border-white/20 flex items-center justify-center text-[11px] font-black text-white">1</div>
-                <h2 class="text-xl font-black uppercase tracking-tighter italic text-white">
-                    Informações do {{ userType === 'broker' ? 'Corretor' : 'Gestor' }}
-                </h2>
-            </div>
-
-            <v-form @submit.prevent="submitForm" class="space-y-6">
-                <div class="space-y-2">
-                    <label class="v-label ml-4">Nome completo</label>
-                    <v-text-field v-model="formData.fullName" variant="solo-filled" flat rounded="pill" 
-                        placeholder="Digite seu nome completo" bg-color="rgba(0,0,0,0.4)" 
-                        prepend-inner-icon="mdi-account-outline" hide-details class="premium-input" />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="v-label ml-4">{{ userType === 'broker' ? 'Número do CRECI' : 'CNPJ da Empresa' }}</label>
-                        <v-text-field v-model="formData.creciOrCnpj" variant="solo-filled" flat rounded="pill" 
-                            placeholder="Digite aqui" bg-color="rgba(0,0,0,0.4)" 
-                            prepend-inner-icon="mdi-shield-check-outline" hide-details class="premium-input" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="v-label ml-4">Telefone / WhatsApp</label>
-                        <v-text-field :model-value="formData.phone" variant="solo-filled" flat rounded="pill" 
-                            placeholder="(XX) XXXXX-XXXX" bg-color="rgba(0,0,0,0.4)" 
-                            prepend-inner-icon="mdi-whatsapp" hide-details class="premium-input"
-                            @update:model-value="onPhoneInput" />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="v-label ml-4">E-mail</label>
-                        <v-text-field v-model="formData.email" type="email" variant="solo-filled" flat rounded="pill" 
-                            placeholder="Digite seu e-mail" bg-color="rgba(0,0,0,0.4)" 
-                            prepend-inner-icon="mdi-email-outline" hide-details class="premium-input" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="v-label ml-4">Senha</label>
-                        <v-text-field v-model="formData.password" type="password" variant="solo-filled" flat rounded="pill" 
-                            placeholder="Digite sua senha" bg-color="rgba(0,0,0,0.4)" 
-                            prepend-inner-icon="mdi-lock-outline" hide-details class="premium-input" />
-                    </div>
-                </div>
-
-                <button type="submit"
-                    class="w-full h-16 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center relative transition-all active:scale-95 border border-white/5"
-                >
-                    CRIAR CONTA
-                    <div class="absolute right-4 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                        <div class="w-6 h-6 bg-white/20 rounded-full"></div> </div>
-                </button>
-            </v-form>
-        </div>
-
-        <div class="text-center">
-            <button @click="$router.push('/login')" class="group text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                Já tenho uma conta
-            </button>
-        </div>
+  <div class="w-full space-y-6">
+    <div class="flex p-1 bg-gray-100 rounded-full w-full max-w-[320px] mx-auto">
+      <button type="button" @click="formData.userType = 'broker'" :class="['flex-1 flex items-center justify-center py-2.5 rounded-full transition-all duration-200', formData.userType === 'broker' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700']">
+        <Briefcase class="w-4 h-4 mr-2" :class="formData.userType === 'broker' ? 'text-[#10B981]' : ''" />
+        <span class="text-sm font-medium">Corretor</span>
+      </button>
+      <button type="button" @click="formData.userType = 'construction'" :class="['flex-1 flex items-center justify-center py-2.5 rounded-full transition-all duration-200', formData.userType === 'construction' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700']">
+        <Building2 class="w-4 h-4 mr-2" :class="formData.userType === 'construction' ? 'text-[#10B981]' : ''" />
+        <span class="text-sm font-medium">Construtora</span>
+      </button>
     </div>
+
+    <form @submit.prevent="handleSubmit" class="space-y-4 pt-2">
+      <div class="space-y-1">
+        <Label>Nome Completo / Razão Social</Label>
+        <Input v-model="formData.fullName" placeholder="Digite aqui" :icon="User" />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <Label>{{ formData.userType === 'broker' ? 'CRECI' : 'CNPJ' }}</Label>
+          <Input v-model="formData.document" placeholder="Documento" :icon="ShieldCheck" />
+        </div>
+        <div class="space-y-1">
+          <Label>Telefone / WhatsApp</Label>
+          <Input v-model="formData.phone" placeholder="(00) 00000-0000" :icon="Phone" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <Label>E-mail Corporativo</Label>
+          <Input v-model="formData.email" type="email" placeholder="Digite aqui" :icon="Mail" />
+        </div>
+        <div class="space-y-1">
+          <Label>Criar Senha</Label>
+          <Input v-model="formData.password" type="password" placeholder="Senha forte" :icon="Lock" />
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <Button type="submit" :disabled="!isFormValid" variant="primary" :showArrow="true">
+          CRIAR CONTA B2B
+        </Button>
+      </div>
+    </form>
+
+    <div class="flex justify-center pt-2">
+      <button @click="emit('navigate-login')" class="text-sm text-[#A4A6B0] hover:text-gray-900 transition-all">
+        Já tem uma conta? <span class="text-black font-medium hover:underline">Fazer login</span>
+      </button>
+    </div>
+  </div>
 </template>
-
-<style scoped>
-.premium-input :deep(.v-field__input) {
-    font-weight: 700 !important;
-    letter-spacing: -0.01em !important;
-    padding-left: 20px !important;
-    color: white !important;
-    font-size: 13px !important;
-}
-
-.premium-input :deep(.v-field__outline) {
-    display: none !important;
-}
-</style>

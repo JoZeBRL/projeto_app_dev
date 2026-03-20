@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import GlobalHeader from '@/components/navigation/GlobalHeader.vue';
@@ -13,32 +13,44 @@ const userName = computed(() => authStore.user?.nome || 'Usuário');
 const userType = computed(() => authStore.user?.tipo || 'broker');
 const activeRouteName = computed(() => String(route.name || '').toLowerCase());
 
+const isSidebarOpen = ref(false);
+
 const handleLogout = () => {
-    authStore.logout();
-    router.push('/login');
+  authStore.logout();
+  router.push('/login');
+};
+
+const handleNavigate = (routeName: string) => {
+  router.push({ name: routeName });
+  isSidebarOpen.value = false;
 };
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 text-gray-900 font-sans transition-colors duration-300 antialiased">
+  <div class="min-h-screen bg-[#f9fafb] font-sans flex flex-col">
+    
+    <Sidebar 
+      :isOpen="isSidebarOpen" 
+      :currentPage="activeRouteName"
+      :userName="userName"
+      :userType="userType"
+      @close="isSidebarOpen = false"
+      @navigate="handleNavigate"
+      @logout="handleLogout"
+    />
+
     <GlobalHeader 
       :userName="userName" 
-      :userType="userType" 
+      :userType="userType"
+      :currentPage="activeRouteName"
+      @open-sidebar="isSidebarOpen = true"
+      @navigate="handleNavigate"
       @logout="handleLogout"
-      @navigate="(name) => router.push({ name })"
     />
-    
-    <div class="max-w-7xl mx-auto flex">
-      <Sidebar 
-        :activeId="activeRouteName" 
-        :userType="userType"
-        @navigate="(name) => router.push({ name })"
-        @logout="handleLogout"
-      />
-      
-      <main class="flex-1 pt-32 pb-12 px-6 lg:px-8">
-        <slot />
-      </main>
-    </div>
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12">
+      <slot />
+    </main>
+
   </div>
 </template>

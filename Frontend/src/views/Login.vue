@@ -1,39 +1,42 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import LoginForm from '@/components/auth/LoginForm.vue';
 import { useAuthStore } from '@/stores/auth';
+import LoginForm from '@/components/auth/LoginForm.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 const handleLogin = async (data: any) => {
-    // Sincronizado com Pinia store
-    authStore.login({ nome: 'Gestor Corretiza', tipo: data.type }, 'token_premium_noir');
-    router.push('/dashboard');
+  // Simulando login
+  authStore.login({ nome: 'Gestor Corretiza', tipo: data.type }, 'token_auth');
+  router.push('/dashboard');
 };
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col items-center justify-center bg-black p-6 selection:bg-emerald-500/30">
-        <div class="text-center mb-12 space-y-4">
-            <div class="flex items-center justify-center gap-4">
-                <div class="w-16 h-16 glass-container !rounded-2xl flex items-center justify-center border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-                    <v-icon icon="mdi-shield-home" size="40" color="white" />
-                </div>
-                <h1 class="text-6xl font-[900] uppercase tracking-tighter italic text-white leading-none">CORRETIZA</h1>
-            </div>
-            <p class="text-[10px] font-[900] uppercase tracking-[0.5em] text-zinc-600">
-                CONECTANDO CORRETORES E CONSTRUTORAS EM CHAPECÓ
-            </p>
+  <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-[#1a1a1a] transition-colors">
+    <div class="w-full max-w-md space-y-8">
+      
+      <div class="text-center space-y-3">
+        <div class="flex items-center justify-center gap-3 select-none">
+          <div class="w-12 h-12 bg-white rounded-[12px] flex items-center justify-center shadow-lg">
+            <span class="text-black font-black italic tracking-tighter text-3xl">C.</span>
+          </div>
+          <div class="flex flex-col -space-y-1 text-left">
+            <span class="text-white font-black text-xl italic uppercase tracking-tighter">Corretiza</span>
+            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-[0.4em] ml-1">Elite Real Estate</span>
+          </div>
         </div>
+        <p class="text-gray-400 text-sm">Conectando Corretores e Construtoras em Chapecó</p>
+      </div>
 
-        <div class="w-full max-w-[480px]">
-            <LoginForm @login="handleLogin" @navigate-signup="router.push('/register')" />
-        </div>
+      <div class="bg-white border border-gray-200 shadow-xl p-8 rounded-[24px]">
+        <LoginForm @login="handleLogin" @navigate-signup="router.push('/register')" />
+      </div>
 
-        <div class="mt-16 text-center opacity-30 hover:opacity-100 transition-opacity duration-700">
-            <p class="text-[9px] font-[900] text-zinc-500 uppercase tracking-[0.3em] mb-1">ACESSO DE TESTE</p>
-            <p class="text-[10px] font-bold text-zinc-400">ADMIN@EXEMPLO.COM / 123456</p>
-        </div>
+      <div class="text-center text-xs text-gray-500 space-y-1">
+        <p>Acesso B2B Habilitado</p>
+      </div>
     </div>
+  </div>
 </template>

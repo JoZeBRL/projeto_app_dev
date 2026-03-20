@@ -1,134 +1,95 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { User, Lock, Briefcase, Building2, AlertCircle } from 'lucide-vue-next';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
+import Label from '@/components/ui/Label.vue';
 
 const props = defineProps<{ error?: string }>();
-const emit = defineEmits(['login', 'navigate-signup']);
+const emit = defineEmits(['login', 'navigate-signup', 'navigate-forgot-password']);
 
 const email = ref('');
 const password = ref('');
 const userType = ref<'broker' | 'construction'>('broker');
 const keepLoggedIn = ref(false);
-const showPassword = ref(false);
 
-const handleLogin = () => {
-    if (email.value && password.value) {
-        emit('login', { email: email.value, password: password.value, type: userType.value });
-    }
+const isFormValid = computed(() => email.value.trim() !== '' && password.value.trim() !== '');
+
+const handleSubmit = () => {
+  if (isFormValid.value) {
+    emit('login', { email: email.value, password: password.value, type: userType.value });
+  }
 };
 </script>
 
 <template>
-    <div class="glass-container !p-12 space-y-10 border-white/5 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.8)]">
-        <div class="flex p-1.5 bg-black/80 rounded-full border border-white/5 mx-auto w-full">
-            <button 
-                type="button" 
-                @click="userType = 'broker'" 
-                :class="[
-                    'flex-1 flex items-center justify-center gap-3 py-4 rounded-full transition-all duration-500 font-[900] text-[10px] uppercase tracking-[0.2em]',
-                    userType === 'broker' ? 'bg-white text-black shadow-2xl' : 'text-zinc-600 hover:text-zinc-400'
-                ]"
-            >
-                <v-icon icon="mdi-briefcase-variant" :color="userType === 'broker' ? '#10B981' : 'currentColor'" size="18" />
-                CORRETOR
-            </button>
-            <button 
-                type="button" 
-                @click="userType = 'construction'" 
-                :class="[
-                    'flex-1 flex items-center justify-center gap-3 py-4 rounded-full transition-all duration-500 font-[900] text-[10px] uppercase tracking-[0.2em]',
-                    userType === 'construction' ? 'bg-white text-black shadow-2xl' : 'text-zinc-600 hover:text-zinc-400'
-                ]"
-            >
-                <v-icon icon="mdi-office-building" :color="userType === 'construction' ? '#10B981' : 'currentColor'" size="18" />
-                CONSTRUTORA
-            </button>
-        </div>
-
-        <v-form @submit.prevent="handleLogin" class="space-y-8">
-            <div class="space-y-3">
-                <label class="v-label ml-5">E-MAIL</label>
-                <v-text-field 
-                    v-model="email" 
-                    variant="solo-filled" 
-                    flat 
-                    rounded="pill" 
-                    placeholder="Digite aqui"
-                    prepend-inner-icon="mdi-account-outline" 
-                    hide-details 
-                    class="premium-input-noir"
-                />
-            </div>
-
-            <div class="space-y-3">
-                <label class="v-label ml-5">SENHA</label>
-                <v-text-field 
-                    v-model="password" 
-                    variant="solo-filled" 
-                    flat 
-                    rounded="pill"
-                    :type="showPassword ? 'text' : 'password'" 
-                    placeholder="Digite aqui" 
-                    prepend-inner-icon="mdi-lock-outline" 
-                    hide-details
-                    class="premium-input-noir"
-                >
-                    <template v-slot:append-inner>
-                        <v-btn icon variant="text" density="compact" @click="showPassword = !showPassword" class="mr-1">
-                            <v-icon :icon="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'" size="18" color="zinc-700" />
-                        </v-btn>
-                    </template>
-                </v-text-field>
-            </div>
-
-            <div class="flex items-center justify-between px-2">
-                <v-checkbox 
-                    v-model="keepLoggedIn" 
-                    label="MANTER LOGADO" 
-                    color="emerald-500" 
-                    density="compact"
-                    hide-details 
-                    class="login-checkbox-noir" 
-                />
-                <button type="button" class="text-[9px] font-[900] uppercase tracking-[0.2em] text-zinc-600 hover:text-white transition-colors">
-                    ESQUECI MINHA SENHA
-                </button>
-            </div>
-
-            <button 
-                type="submit" 
-                :disabled="!email || !password"
-                class="w-full h-14 bg-zinc-950 hover:bg-zinc-900 border border-white/5 disabled:opacity-30 text-white rounded-full font-[900] text-xs uppercase tracking-[0.4em] flex items-center justify-center relative transition-all active:scale-[0.98]"
-            >
-                ENTRAR
-                <div class="absolute right-4 w-9 h-9 bg-zinc-800 rounded-full flex items-center justify-center border border-white/10 group-hover:bg-zinc-700">
-                    <v-icon icon="mdi-chevron-right" size="22" color="white" />
-                </div>
-            </button>
-        </v-form>
-
-        <div class="text-center">
-            <p class="text-[10px] font-[900] text-zinc-600 uppercase tracking-[0.2em]">
-                AINDA NÃO TEM CONTA? 
-                <button @click="emit('navigate-signup')" class="text-white underline underline-offset-4 decoration-emerald-500 ml-2 hover:text-emerald-400">
-                    CRIAR CONTA
-                </button>
-            </p>
-        </div>
+  <div class="w-full space-y-6">
+    <div class="flex p-1 bg-gray-100 rounded-full w-full max-w-[320px] mx-auto">
+      <button
+        type="button"
+        @click="userType = 'broker'"
+        :class="[
+          'flex-1 flex items-center justify-center py-2.5 rounded-full transition-all duration-200',
+          userType === 'broker' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+        ]"
+      >
+        <Briefcase class="w-4 h-4 mr-2" :class="userType === 'broker' ? 'text-[#10B981]' : ''" />
+        <span class="text-sm font-medium">Corretor</span>
+      </button>
+      <button
+        type="button"
+        @click="userType = 'construction'"
+        :class="[
+          'flex-1 flex items-center justify-center py-2.5 rounded-full transition-all duration-200',
+          userType === 'construction' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+        ]"
+      >
+        <Building2 class="w-4 h-4 mr-2" :class="userType === 'construction' ? 'text-[#10B981]' : ''" />
+        <span class="text-sm font-medium">Construtora</span>
+      </button>
     </div>
+
+    <form @submit.prevent="handleSubmit" class="space-y-4 pt-2">
+      <div class="space-y-1">
+        <Label for="email">E-mail</Label>
+        <Input id="email" v-model="email" type="email" placeholder="Digite aqui" :icon="User" />
+      </div>
+
+      <div class="space-y-1">
+        <Label for="password">Senha</Label>
+        <Input id="password" v-model="password" type="password" placeholder="Digite aqui" :icon="Lock" />
+      </div>
+
+      <div class="flex items-center justify-between px-2 py-2">
+        <label class="flex items-center space-x-2 cursor-pointer group">
+          <div class="relative flex items-center justify-center w-4 h-4 border-2 border-gray-400 rounded group-hover:border-gray-600 transition-colors">
+            <input v-model="keepLoggedIn" type="checkbox" class="sr-only" />
+            <svg v-if="keepLoggedIn" class="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-xs text-gray-500 select-none">Manter logado</span>
+        </label>
+
+        <button type="button" @click="emit('navigate-forgot-password')" class="text-xs text-[#A4A6B0] hover:text-gray-900 hover:underline transition-all">
+          Esqueci minha senha
+        </button>
+      </div>
+
+      <div v-if="error" class="bg-red-50 text-red-600 p-3 rounded-lg flex items-center gap-2 text-sm mb-4">
+        <AlertCircle class="h-4 w-4" />
+        <span>{{ error }}</span>
+      </div>
+
+      <Button type="submit" :disabled="!isFormValid" variant="primary" :showArrow="true">
+        ENTRAR
+      </Button>
+    </form>
+
+    <div class="flex justify-center pt-2">
+      <button @click="emit('navigate-signup')" class="text-sm text-[#A4A6B0] hover:text-gray-900 transition-all">
+        Ainda não tem conta? <span class="text-black font-medium hover:underline">Criar conta</span>
+      </button>
+    </div>
+  </div>
 </template>
-
-<style scoped>
-.premium-input-noir :deep(.v-field__input) {
-    font-weight: 700 !important;
-    padding-left: 20px !important;
-    color: white !important;
-    font-size: 14px !important;
-}
-
-.login-checkbox-noir :deep(.v-label) {
-    font-size: 9px !important;
-    font-weight: 900 !important;
-    letter-spacing: 0.2em !important;
-    color: #52525b !important;
-}
-</style>

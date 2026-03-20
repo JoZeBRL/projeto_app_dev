@@ -1,34 +1,61 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import Logo from './Logo.vue';
-import SearchBar from '../search/SearchBar.vue';
+import { computed } from 'vue';
+import { Menu } from 'lucide-vue-next';
 import UserMenu from './UserMenu.vue';
 
-defineProps<{ userName: string; userType?: 'broker' | 'construction' }>();
-const emit = defineEmits(['navigate', 'logout']);
+const props = defineProps<{
+  userName: string;
+  userType?: 'broker' | 'construction';
+  currentPage: string;
+}>();
 
-const isScrolled = ref(false);
-const handleScroll = () => isScrolled.value = window.scrollY > 20;
+const emit = defineEmits(['open-sidebar', 'navigate', 'logout']);
 
-onMounted(() => window.addEventListener('scroll', handleScroll, { passive: true }));
-onUnmounted(() => window.removeEventListener('scroll', handleScroll));
+const navLinks = computed(() => [
+  { id: 'search', label: props.userType === 'construction' ? 'Dashboard' : 'Pesquisar' },
+  { id: 'my-properties', label: 'Meus Imóveis' },
+  { id: 'negociacoes', label: 'Negociações' },
+  { id: 'favorites', label: 'Favoritos' },
+]);
 </script>
 
 <template>
-    <header :class="[
-        'fixed top-0 left-0 right-0 z-[60] transition-all duration-500 border-b',
-        isScrolled ? 'glass-container !rounded-none !border-x-0 !border-t-0' : 'bg-transparent border-transparent'
-    ]">
-        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between gap-6">
-            <Logo class="cursor-pointer hover:scale-105 transition-transform" @click="emit('navigate', 'dashboard')" />
-            
-            <div v-if="userType === 'broker'" class="flex-1 max-w-xl hidden lg:block transition-all" :class="isScrolled ? 'opacity-100' : 'opacity-90'">
-                <div class="h-12 w-full rounded-full border border-[var(--glass-border)] bg-[var(--input-bg)] flex items-center px-4">
-                    <span class="text-[var(--label-color)] text-xs font-[900] uppercase tracking-widest">Buscar imóveis...</span>
-                </div>
-            </div>
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center gap-4">
+        <button @click="emit('open-sidebar')" class="lg:hidden p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors">
+          <Menu class="w-6 h-6" />
+        </button>
 
-            <UserMenu :userName="userName" :userType="userType" @navigate="(id) => emit('navigate', id)" @logout="emit('logout')" />
+        <div class="flex items-center gap-3 cursor-pointer select-none" @click="emit('navigate', 'dashboard')">
+          <div class="w-10 h-10 bg-black rounded-[10px] flex items-center justify-center shadow-md">
+            <span class="text-white font-black italic text-xl">C.</span>
+          </div>
+          <span class="hidden sm:block text-black font-black text-xl italic uppercase tracking-tighter">Corretiza</span>
         </div>
-    </header>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-8">
+        <button 
+          v-for="link in navLinks" 
+          :key="link.id"
+          @click="emit('navigate', link.id)"
+          :class="[
+            'text-sm font-medium transition-colors hover:text-black outline-none',
+            currentPage === link.id ? 'text-black' : 'text-gray-500'
+          ]"
+        >
+          {{ link.label }}
+        </button>
+      </nav>
+
+      <UserMenu 
+        :userName="userName" 
+        :userType="userType" 
+        @navigate="(id) => emit('navigate', id)" 
+        @logout="emit('logout')" 
+      />
+    </div>
+  </header>
 </template>
