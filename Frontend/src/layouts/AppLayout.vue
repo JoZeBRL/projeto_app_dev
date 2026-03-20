@@ -48,7 +48,7 @@ const handleNavigate = (routeName: string) => {
       @logout="handleLogout"
     />
 
-    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12">
+    <main class="flex-1 w-full h-full">
       <slot />
     </main>
 
