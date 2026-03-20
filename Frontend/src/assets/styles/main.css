@@ -8,80 +8,30 @@
 }
 
 :root {
-  /* LIGHT MODE (App Shell) */
+  /* LIGHT MODE (App Shell Interno) - Cores Figma */
   --bg-color: #f9fafb;
   --text-color: #111827;
-  --glass-bg: #ffffff;
-  --glass-border: #e5e7eb;
-  --input-bg: #f3f4f6;
   --label-color: #6b7280;
 }
 
 .dark {
-  /* DARK MODE (Auth/Noir) */
-  --bg-color: #000000;
+  /* DARK MODE (Tela de Login) - Fundo #1a1a1a conforme Figma App.tsx */
+  --bg-color: #1a1a1a;
   --text-color: #ffffff;
-  --glass-bg: rgba(24, 24, 27, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --input-bg: rgba(0, 0, 0, 0.6);
-  --label-color: #a1a1aa;
+  --label-color: #9ca3af;
 }
 
 @layer base {
+  * {
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+
   body {
-    background-color: var(--bg-color) !important;
-    color: var(--text-color) !important;
-    font-family: var(--font-main) !important;
-    @apply antialiased transition-colors duration-300;
+    @apply bg-[var(--bg-color)] text-[var(--text-color)] antialiased transition-colors duration-300;
+    font-family: var(--font-main);
   }
 
-  /* Força a remoção do background padrão do Vuetify */
-  .v-application {
-    background: transparent !important;
-    color: inherit !important;
-  }
-  .v-application__wrap {
-    min-height: 100vh !important;
-  }
-}
-
-@layer components {
-  /* Box Container Padrão (Figma) */
-  .glass-container {
-    background-color: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 24px !important;
-    @apply shadow-sm;
-  }
-
-  /* Reset Agressivo nos Inputs do Vuetify */
-  .v-field {
-    background-color: var(--input-bg) !important;
-    border: 1px solid transparent !important;
-    box-shadow: none !important;
-    border-radius: 200px !important;
-  }
-  
-  .v-field__outline {
-    display: none !important;
-  }
-
-  .v-field--focused {
-    background-color: var(--glass-bg) !important;
-    border-color: var(--text-color) !important;
-  }
-
-  .v-label {
-    color: var(--label-color) !important;
-    opacity: 1 !important;
-    font-weight: 600 !important;
-  }
-
-  /* Botão Mestre */
-  .btn-premium {
-    background-color: var(--text-color) !important;
-    color: var(--bg-color) !important;
-    border-radius: 200px !important;
-    @apply font-[900] uppercase tracking-[0.1em] px-8 py-4 transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2;
-  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background-color: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-600 rounded-full; }
 }

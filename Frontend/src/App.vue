@@ -6,22 +6,19 @@ import AppLayout from '@/layouts/AppLayout.vue';
 
 const route = useRoute();
 
-// Define dinamicamente o layout baseado na rota. Padrão: AppLayout (Interno)
 const layout = computed(() => {
   return route.meta.layout === 'auth' ? AuthLayout : AppLayout;
 });
 </script>
 
 <template>
-  <v-app class="!bg-transparent">
-    <component :is="layout">
-      <router-view v-slot="{ Component }">
-        <transition name="premium-fade" mode="out-in">
-          <component :is="Component" :key="route.path" />
-        </transition>
-      </router-view>
-    </component>
-  </v-app>
+  <component :is="layout">
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in" appear>
+        <component :is="Component" :key="route.path" />
+      </transition>
+    </router-view>
+  </component>
 </template>
 
 <style>
@@ -30,15 +27,15 @@ body {
   overflow-x: hidden;
 }
 
-.premium-fade-enter-active,
-.premium-fade-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
-.premium-fade-enter-from {
+.fade-enter-from {
   opacity: 0;
   transform: translateY(10px);
 }
-.premium-fade-leave-to {
+.fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
