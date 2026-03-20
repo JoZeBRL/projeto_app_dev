@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { LayoutDashboard, Search, Heart, Calendar, Handshake, Building, Wallet, X, LogOut } from 'lucide-vue-next';
+import { LayoutDashboard, Search, Heart, Calendar, Building, Wallet, X, LogOut } from 'lucide-vue-next';
 
 const props = withDefaults(defineProps<{
   isOpen: boolean;

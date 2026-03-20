@@ -34,6 +34,9 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './src/assets')
     }
   },
+  optimizeDeps: {
+    include: ['lucide-vue-next']
+  },
   server: {
     port: 5174,
     strictPort: true,
