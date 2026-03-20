@@ -1,0 +1,15 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Expõe a porta do Vite (padrão do app é 5174 e 5173 comuns)
+EXPOSE 5173
+EXPOSE 5174
+
+# Inicia o servidor de desenvolvimento
+CMD ["npm", "run", "dev", "--", "--host"]

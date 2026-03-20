@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/* 1. Configuração de Tema Tailwind v4 (Rigor Noir + Figma) */
+@theme {
+  --color-background: #000000;
+  --color-card-base: #0a0a0a;
+  --color-card-active: #1f1f1f; /* Conforme Figma dark.card */
+  --color-emerald-premium: #10B981;
+  --color-foreground: #ffffff;
+  
+  /* MARCA CORRETIZA */
+  --color-primary: #ffffff;
+  --color-secondary: #1a1a1a;
+  
+  /* BORDAS E ESTADOS FIGMA */
+  --color-border-figma: #2a2a2a; /* Conforme Figma dark.border */
+  --color-ring-figma: #525252; /* Conforme Figma dark.ring */
+  --color-border-premium: rgba(255, 255, 255, 0.1);
+  
+  /* GEOMETRIA FIGMA (40px) */
+  --radius-premium: 40px;
+  --radius-card: 24px;
+
+  /* TIPOGRAFIA EXTREMA (Figma Fidelity) */
+  --font-main: 'Inter', system-ui, sans-serif;
+}
+
+/* 2. Resets de Base e Rigor Tipográfico */
+@layer base {
+  * {
+    @apply border-border-premium;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+
+  body {
+    @apply bg-background text-white antialiased;
+    font-family: var(--font-main);
+  }
+
+  /* FORÇAR RIGOR EM TÍTULOS E LABELS */
+  h1, h2, h3, .label-premium {
+    @apply font-[900] uppercase tracking-[0.2em] italic;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { @apply bg-black; }
+  ::-webkit-scrollbar-thumb { @apply bg-zinc-800 rounded-full; }
+}
+
+/* 3. Integração Vuetify 4 (Efeito Figma Focus) */
+@layer components {
+  /* Glassmorphism Refinado */
+  .glass-container {
+    @apply bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-[40px];
+    box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.8);
+  }
+
+  /* ESTADO DE FOCO "LIGHTER CARD" (Fiel ao print Figma) */
+  .v-field {
+    @apply !bg-black/60 !border-white/5 !transition-all !duration-500 !h-[52px];
+  }
+  
+  .v-field--focused {
+    @apply !bg-[#1f1f1f] !border-zinc-700; /* Elevação cromática do Figma */
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.03);
+  }
+
+  /* Labels conforme Rigor B2B */
+  .v-label {
+    @apply !font-[900] !uppercase !tracking-[0.2em] !text-[9px] !text-zinc-600 !opacity-100;
+  }
+
+  .premium-input-noir :deep(.v-field__outline),
+  .premium-input-field :deep(.v-field__outline) {
+    display: none !important;
+  }
+
+  /* Botão Premium Generalista */
+  .btn-premium {
+    @apply bg-white text-black font-[900] uppercase tracking-[0.2em] px-10 py-5 
+           rounded-[40px] transition-all duration-300
+           hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3;
+    font-size: 10px;
+  }
+}
