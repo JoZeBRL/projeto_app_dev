@@ -31,7 +31,11 @@ const handleLogin = async (data: any) => {
       </div>
 
       <div class="bg-white border border-gray-200 shadow-xl p-8 rounded-[24px]">
-        <LoginForm @login="handleLogin" @navigate-signup="router.push('/register')" />
+        <LoginForm 
+          @login="handleLogin" 
+          @navigate-signup="router.push('/register')" 
+          @navigate-forgot-password="router.push('/forgot-password')"
+        />
       </div>
 
       <div class="text-center text-xs text-gray-500 space-y-1">
